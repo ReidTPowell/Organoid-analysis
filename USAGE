@@ -1,0 +1,63 @@
+In order to replicate the results of this study, code must be run in the following order:
+1)	Project TL stack
+  a.	Description – Automates and parallelizes ImageJ macro script to pre-process and project transmitted light Z-stack
+  b.	Software requirements:
+    i.	Pipeline Pilot 2018 server/Pro client
+    ii.	Image J/Fiji (Downloaded at: https://imagej.nih.gov/ij/download.html)  ImageJ must be integrated with Pipeline Pilot, see PLP/ImageJ installation instructions upon purchase. 
+    iii.	(ImageJ Plugin) Stack focuser (Download at: https://imagej.nih.gov/ij/plugins/stack-focuser.html)
+  c.	Runtime instructions
+    i.	Open Pipeline Pilot and load “1)  Project TL stack.ppxml”
+    ii.	Click on “Directory” and select folder containing the raw transmitted light images from an ImageXpress microconfocal
+    iii.	Click “Run”
+    iv.	Output: Folder with “_Proj” suffix containing background corrected and projected images.
+  d.	Other:
+    i.	Tested on Windows Server 2016 and Windows 10
+    ii.	CPU and RAM availability limit parallelization/speed. Requires > 4 gb RAM per thread.
+2)	RESNET-embedding
+  a.	Description – Converts images into numeric vectors using the RESNET-18 architecture that was pre-trained on the ImageNet dataset
+  b.	Software requirements:
+    i.	Anaconda with Python 3.8.X
+    ii.	(Python package) PyTorch 1.7.1
+  c.	Run time instructions	
+    i.	Open “2) RESNET-embedding.ipynb” using a jupyter notebook.
+    ii.	Use the user input section to provide the path to the folder containing tif images
+    iii.	Run “Guts” to load all functions, download pre-trained RESNET and perform image embedding.
+  d.	Output:  DeepHTS.csv = Each row represents a single image, columns refer to index values of the RESNET-18 output feature vector. 
+  e.	Other:
+    i.	Tested on Windows Server 2016 and Windows 10
+    ii.	Typical run time: 1-3 minutes/384-well plate
+3)	Feature mapping (PCA and kNN)
+  a.	Description – Merges metadata (platemaps and drug info) then performs PCA analysis and kNN clustering using the output of the RESNET-embedding.
+  b.	Software requirements:
+    i.	Pipeline Pilot 2018 server/Pro Client or higher
+    ii.	R 3.4+, must be configured to run with pipeline pilot according to the Pipeline Pilot installation instructions. 
+    iii.	(R library) caret
+    iv.	(R library) e1071
+  c.	Runtime instructions
+    i.	Open Pipeline Pilot and load “3) Feature mapping (PCA and kNN).ppxml”
+    ii.	Click on “Plate metadata” and select the plate metadata file. See the included file for example.
+      1.	Required columns in “Plate metadata.xlsx”
+        a.	Raw_data = Relative file path to raw data directory
+        b.	Projections = Relative file path to projected images from “1) Projected TL stacks” algorithm. This folder (or subfolders with in) must contain the DeepHTS.csv file from “2) RESNET-embedding”
+        c.	CCL_ID = name of the Cell line
+        d.	Plate_map = Relative path to the plate maps. File must contain the following columns:
+          i.	  Row = 384-well plate row position
+          ii.	Col = 384-well plate row position
+          iii.	Cmpd1 = Compound name
+          iv.	Conc1 = The molar concentration of the drug treatment
+          v.	Func = Experimental function code for drug treatment
+            1.	Pos = Positive control
+            2.	Neg = Negative control (typically DMSO)
+            3.	Media = Media with out cells
+            4.	Cells = Cells with media, no vehicle control
+            5.	Sing = Single agent
+            6.	DRC = Control response curve
+  e.	Assay_batch =  To group plates that are run in the same day/cell passage 
+  f.	Group = Larger grouping that should be considered for modeling the cumulative dataset.
+    iii.	Assumed image naming convention: <Channel>_<Row>_<Col>_<Field>.tif
+    iv.	Set “Group to run” to either primary or validation.
+    v.	Click “Run”
+  d.	Output: HTML report containing: PCA analysis, kNN quality control and class probability scores, SVR fitted dose response curves. 
+  e.	Other:
+    i.	Tested on Windows Server 2016 and Windows 10
+    ii.	Typical run time: 3-5 minutes
