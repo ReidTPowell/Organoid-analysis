@@ -16,9 +16,10 @@ CONTENTS
 README         This file.
 LICENSE        How this code is licensed.
 USAGE		Instructions to replicate the finds of the study
-Images/		Example images files/folder structure. This is for demonstration purposes, likewise, does not contain all images. 
 Code/           Jupyter notebooks and Pipeline Pilot scripts.
 Metadata/	Experimental metadata
+
+Image files available at: https://drive.google.com/drive/folders/1SWa5IZubeDNOrd9tkwbkrp3sJEmViWFW
 
 System requirements:
 This code was not thoroughly tested on a wide range of machines. The system configuration that was used to perform all analysis/benchmarking was performed on a Dell PowerEdge R740xd server running Windows Server 2016 standard edition and equipped with: dual 3.3 Ghz Xeon Gold 6246 CPUs [Intel], 192 Gb DDR5 RAM, and a NVIDIA Tesla V100 32Gb purchased from Dell EMC using funds from the CPRIT CFSA RP150578. 
