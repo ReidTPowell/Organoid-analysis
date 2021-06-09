@@ -16,6 +16,7 @@ CONTENTS
 README         This file.
 LICENSE        How this code is licensed.
 USAGE		Instructions to replicate the finds of the study
+Images/         Place holder folder, images availbe from link below
 Code/           Jupyter notebooks and Pipeline Pilot scripts.
 Metadata/	Experimental metadata
 
